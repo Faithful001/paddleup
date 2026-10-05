@@ -18,17 +18,4 @@ import java.util.UUID;
 public class BidController {
     private final BidService bidService;
     private final BidMapper bidMapper;
-
-    @PostMapping("/{id}/bids")
-    public ResponseEntity<Response<CreateBidResponse>> create(
-            @AuthenticationPrincipal UUID userId,
-            @PathVariable UUID id,
-            @Valid @RequestBody CreateBidRequest request) {
-
-        Bid bid = bidService.create(request, id, userId);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(Response.success(bidMapper.toResponse(bid)));
-    }
 }

@@ -10,9 +10,13 @@ import com.king.paddleup.domain.user.UserRepository;
 import com.king.paddleup.shared.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -63,5 +67,14 @@ public class BidService {
         events.publishEvent(bidPlacedEvent);
 
         return bid;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Bid> findByAuctionId(UUID auctionId, Pageable pageable) {
+        if (!auctionRepository.existsById(auctionId)) {
+            throw new AuctionNotFoundException("Auction not found");
+        }
+
+        return bidRepository.findByAuctionId(auctionId, pageable);
     }
 }

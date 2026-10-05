@@ -1,14 +1,13 @@
 package com.king.paddleup.domain.bid.dto;
 
-import com.king.paddleup.domain.bid.Bid;
+import org.hibernate.validator.constraints.UUID;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.UUID;
 
-public record CreateBidResponse(
+public record GetBidResponse(
         UUID id,
-        UUID auctionId,
         BigDecimal amount,
+        BidderResponse bidder,
         Instant placedAt
 ) {}

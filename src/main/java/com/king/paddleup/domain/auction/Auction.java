@@ -1,9 +1,14 @@
 package com.king.paddleup.domain.auction;
 
+import com.king.paddleup.domain.auction.enums.AuctionStatus;
+import com.king.paddleup.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -11,6 +16,8 @@ import java.util.UUID;
 @Table(name = "auctions")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Auction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,13 +29,23 @@ public class Auction {
     private String description;
 
     @Column(nullable = false)
-    private String startingPrice;
+    private int startingPrice;
 
     @Column
-    private String reservePrice;
+    private int reservePrice;
+
+    @Column
+    private int minIncrement;
 
     @Column(nullable = false)
     private Instant endTime;
+
+    @Column
+    private AuctionStatus status = AuctionStatus.ACTIVE;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id", nullable = false)
+    private User seller;
 
     @Column(nullable = false)
     private Instant createdAt;

@@ -43,8 +43,8 @@ public class BidService {
         }
 
         BigDecimal minimumBid = bidRepository.findHighestAmount(auctionId)
-                .map(highest -> highest.add(BigDecimal.valueOf(auction.getMinIncrement())))
-                .orElse(BigDecimal.valueOf(auction.getStartingPrice()));
+                .map(highest -> highest.add(auction.getMinIncrement()))
+                .orElse(auction.getStartingPrice());
 
         if (payload.amount().compareTo(minimumBid) < 0) {
             throw new BidTooLowException("Bid must be at least " + minimumBid);

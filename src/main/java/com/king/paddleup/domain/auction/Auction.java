@@ -43,19 +43,21 @@ public class Auction {
 
     @Column(nullable = false)
     private String title;
+
     @Column
     private String description;
 
-    @Column(nullable = false)
-    private int startingPrice;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal startingPrice;
 
-    @Column
-    private int reservePrice;
+    @Column(precision = 12, scale = 2)
+    private BigDecimal reservePrice;
 
-    @Column
-    private int minIncrement;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal minIncrement = BigDecimal.ONE;
 
-    @Column
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private AuctionStatus status = AuctionStatus.ACTIVE;
 
     @JdbcTypeCode(SqlTypes.ARRAY)

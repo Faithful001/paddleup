@@ -37,15 +37,15 @@ public class Auction {
     @Column
     private int minIncrement;
 
-    @Column(nullable = false)
-    private Instant endTime;
-
     @Column
     private AuctionStatus status = AuctionStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
+
+    @Column(nullable = false)
+    private Instant endsAt;
 
     @Column(nullable = false)
     private Instant createdAt;

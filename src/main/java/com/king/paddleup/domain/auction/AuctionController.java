@@ -25,6 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/auctions")
 public class AuctionController {
+
     private final BidService bidService;
     private final BidMapper bidMapper;
 

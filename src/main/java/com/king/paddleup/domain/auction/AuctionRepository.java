@@ -11,6 +11,6 @@ import java.util.UUID;
 
 public interface AuctionRepository extends JpaRepository<Auction, UUID> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT a FROM Auction WHERE a.id = :id")
-    Optional<Auction> findByIdForUpdate(@Param("id") UUID uuid);
+    @Query("SELECT a FROM Auction a WHERE a.id = :id")
+    Optional<Auction> findByIdForUpdate(@Param("id") UUID id);
 }

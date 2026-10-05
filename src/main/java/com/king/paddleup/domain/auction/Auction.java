@@ -3,17 +3,35 @@ package com.king.paddleup.domain.auction;
 import com.king.paddleup.domain.auction.enums.AuctionStatus;
 import com.king.paddleup.domain.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "auctions")
+@Table(name = "auctions", check = {
+        @CheckConstraint(
+                name = "chk_image_urls_max",
+                constraint = "cardinality(image_urls) <= 10"
+        ),
+        @CheckConstraint(
+                name = "chk_auctions_status",
+                constraint = "status in ('DRAFT', 'ACTIVE', 'CLOSED', 'CANCELLED')"
+        ),
+        @CheckConstraint(
+                name = "chk_min_increment",
+                constraint = "min_increment > 0"
+        )
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -40,6 +58,11 @@ public class Auction {
     @Column
     private AuctionStatus status = AuctionStatus.ACTIVE;
 
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Size(max = 10)
+    @Column(name = "image_urls", columnDefinition = "varchar(500)[]", nullable = false)
+    private List<String> imageUrls = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
@@ -59,7 +82,7 @@ public class Auction {
         this.updatedAt = Instant.now();
     }
 
-    @PrePersist
+    @PreUpdate
     protected void onUpdate(){
         this.updatedAt = Instant.now();
     }

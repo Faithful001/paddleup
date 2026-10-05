@@ -10,7 +10,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "bids")
+@Table(name = "bids", indexes = {
+        @Index(name = "idx_bids_auction_id", columnList = "auction_id")
+})
 @Getter
 @Setter
 @NoArgsConstructor

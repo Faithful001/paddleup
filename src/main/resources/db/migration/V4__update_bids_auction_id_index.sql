@@ -1,0 +1,1 @@
+CREATE INDEX idx_bids_auction_id ON bids (auction_id);

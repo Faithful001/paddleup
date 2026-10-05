@@ -1,6 +1,6 @@
 package com.king.paddleup.domain.bid.dto;
 
-import org.hibernate.validator.constraints.UUID;
+import java.util.UUID;
 
 public record BidderResponse(
         UUID id,

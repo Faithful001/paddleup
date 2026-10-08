@@ -66,6 +66,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Response<String>> handleCategoryNotFoundException(CategoryNotFoundException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.NOT_FOUND
+        );
+    }
 
+    @ExceptionHandler(AuctionNotUpdatableException.class)
+    public ResponseEntity<Response<String>> handleAuctionNotUpdatableException(AuctionNotUpdatableException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 
 }

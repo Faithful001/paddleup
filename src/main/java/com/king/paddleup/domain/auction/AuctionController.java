@@ -2,6 +2,7 @@ package com.king.paddleup.domain.auction;
 
 import com.king.paddleup.domain.auction.dto.CreateAuctionRequest;
 import com.king.paddleup.domain.auction.dto.GetAuctionResponse;
+import com.king.paddleup.domain.auction.dto.UpdateAuctionRequest;
 import com.king.paddleup.domain.bid.Bid;
 import com.king.paddleup.domain.bid.BidMapper;
 import com.king.paddleup.domain.bid.BidService;
@@ -42,9 +43,9 @@ public class AuctionController {
     public ResponseEntity<Response<GetAuctionResponse>> create(@AuthenticationPrincipal UUID id, @Valid @RequestBody CreateAuctionRequest payload) {
         Auction auction = auctionService.create(id, payload);
 
-        return ResponseEntity.ok(
-        Response.success(auctionMapper.toGetResponse(auction))
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(Response.success(auctionMapper.toGetResponse(auction)));
     }
 
     @GetMapping
@@ -78,6 +79,18 @@ public class AuctionController {
 
         return ResponseEntity.ok(
         Response.success(auctionMapper.toGetResponse(auction))
+        );
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Response<GetAuctionResponse>> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateAuctionRequest payload
+            ) {
+        Auction auction = auctionService.update(id, payload);
+
+        return ResponseEntity.ok(
+                Response.success(auctionMapper.toGetResponse(auction))
         );
     }
 

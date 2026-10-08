@@ -2,9 +2,12 @@ package com.king.paddleup.domain.auction;
 
 import com.king.paddleup.domain.auction.dto.CreateAuctionRequest;
 import com.king.paddleup.domain.auction.dto.GetAuctionResponse;
+import com.king.paddleup.domain.auction.dto.UpdateAuctionRequest;
+import com.king.paddleup.domain.auction.enums.AuctionStatus;
 import com.king.paddleup.domain.user.User;
 import com.king.paddleup.domain.user.UserRepository;
 import com.king.paddleup.shared.exception.AuctionNotFoundException;
+import com.king.paddleup.shared.exception.AuctionNotUpdatableException;
 import com.king.paddleup.shared.exception.UserIsSuspendedException;
 import com.king.paddleup.shared.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -58,5 +61,25 @@ public class AuctionService {
                 .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
     }
 
+    @Transactional
+    public Auction update(UUID id, UpdateAuctionRequest payload) {
+        Auction auction = auctionRepository.findById(id)
+                .orElseThrow(() -> new AuctionNotFoundException("Auction not found"));
 
+        if (auction.getStatus() != AuctionStatus.DRAFT) {
+            throw new AuctionNotUpdatableException(
+                    "Auction cannot be updated because it is not a draft"
+            );
+        }
+
+        auction.setTitle(payload.title());
+        auction.setDescription(payload.description());
+        auction.setStartingPrice(payload.startingPrice());
+        auction.setReservePrice(payload.reservePrice());
+        auction.setMinIncrement(payload.minIncrement());
+        auction.setImageUrls(payload.imageUrls());
+        auction.setEndsAt(payload.endsAt());
+
+        return auction;
+    }
 }

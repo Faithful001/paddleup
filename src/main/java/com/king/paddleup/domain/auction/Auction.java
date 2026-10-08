@@ -22,7 +22,7 @@ import java.util.UUID;
         ),
         @CheckConstraint(
                 name = "chk_auctions_status",
-                constraint = "status in ('DRAFT', 'ACTIVE', 'CLOSED', 'CANCELLED')"
+                constraint = "status in ('DRAFT', 'ACTIVE', 'CLOSED', 'ENDED', 'AWAITING_PAYMENT', 'COMPLETED')"
         ),
         @CheckConstraint(
                 name = "chk_min_increment",
@@ -67,8 +67,19 @@ public class Auction {
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
+    @Column
+    private BigDecimal highestBid;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "winner_id")
+    private User winner;
+
+    @Column
+    private Instant paymentDeadline;
+
     @Column(nullable = false)
     private Instant endsAt;
+
 
     @Column(nullable = false)
     private Instant createdAt;

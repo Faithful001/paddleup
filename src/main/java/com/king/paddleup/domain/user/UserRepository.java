@@ -7,6 +7,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
-    @Query("SELECT u.is_suspended FROM User WHERE a.id = :id")
+    @Query("SELECT u.isSuspended FROM User u WHERE u.id = :id")
     boolean isSuspended(@Param("id") UUID id);
 }

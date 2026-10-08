@@ -35,6 +35,9 @@ public class User {
     @Column(nullable = false)
     private Boolean isSuspended = false;
 
+    @Column
+    private Instant suspendedAt;
+
     @Column(nullable = false)
     private Instant createdAt;
 

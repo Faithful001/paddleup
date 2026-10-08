@@ -8,5 +8,4 @@ import lombok.Builder;
 public record CreateCategoryRequest(
         @NotBlank @Size(max = 100, message = "Max name length is 100") String name,
         @Size(max = 500, message = "Max description length is 500") String description
-) {
-}
+) {}

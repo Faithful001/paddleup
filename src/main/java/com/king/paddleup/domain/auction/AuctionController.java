@@ -8,6 +8,7 @@ import com.king.paddleup.domain.bid.BidService;
 import com.king.paddleup.domain.bid.dto.CreateBidRequest;
 import com.king.paddleup.domain.bid.dto.CreateBidResponse;
 import com.king.paddleup.domain.bid.dto.GetBidResponse;
+import com.king.paddleup.infrastructure.sse.BidSseService;
 import com.king.paddleup.shared.response.PageResponse;
 import com.king.paddleup.shared.response.Response;
 import jakarta.validation.Valid;
@@ -17,9 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +36,7 @@ public class AuctionController {
     private final BidMapper bidMapper;
     private final AuctionService auctionService;
     private final AuctionMapper auctionMapper;
+    private final BidSseService bidSseService;
 
     @PostMapping
     public ResponseEntity<Response<GetAuctionResponse>> create(@AuthenticationPrincipal UUID id, @Valid @RequestBody CreateAuctionRequest payload) {
@@ -43,7 +47,7 @@ public class AuctionController {
         );
     }
 
-    @GetMapping("/{id}")
+    @GetMapping
     public ResponseEntity<Response<List<GetAuctionResponse>>> getAll() {
         List<Auction> auction = auctionService.findAll();
 
@@ -85,5 +89,10 @@ public class AuctionController {
 
         return ResponseEntity.ok(
                 Response.success(PageResponse.from(bids.map(bidMapper::toGetResponse))));
+    }
+
+    @GetMapping(value = "/{id}/bids/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter streamBids(@PathVariable UUID id) {
+        return bidSseService.subscribe(id);
     }
 }

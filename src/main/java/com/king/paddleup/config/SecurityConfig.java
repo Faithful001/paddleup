@@ -35,7 +35,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml",
-                                "/error"
+                                "/error",
+                                "/auctions/*/bids/stream"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

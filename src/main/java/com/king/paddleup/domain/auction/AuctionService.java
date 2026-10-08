@@ -8,6 +8,8 @@ import com.king.paddleup.shared.exception.AuctionNotFoundException;
 import com.king.paddleup.shared.exception.UserIsSuspendedException;
 import com.king.paddleup.shared.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +22,7 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final UserRepository userRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public Auction create(UUID userId, CreateAuctionRequest payload) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -41,8 +43,13 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
-    public List<Auction> findAll() {
-        return auctionRepository.findAll();
+    public Page<Auction> findMyAuctions(UUID userId, Pageable pageable) {
+        return auctionRepository.findAllBySellerId(userId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Auction> findAll(Pageable pageable) {
+        return auctionRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = true)

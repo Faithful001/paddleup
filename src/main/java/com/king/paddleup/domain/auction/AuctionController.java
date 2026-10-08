@@ -48,11 +48,27 @@ public class AuctionController {
     }
 
     @GetMapping
-    public ResponseEntity<Response<List<GetAuctionResponse>>> getAll() {
-        List<Auction> auction = auctionService.findAll();
+    public ResponseEntity<Response<PageResponse<GetAuctionResponse>>> getAll(
+            @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ) {
+        Page<Auction> auction = auctionService.findAll(pageable);
 
         return ResponseEntity.ok(
-        Response.success(auctionMapper.toGetResponses(auction))
+        Response.success(PageResponse.from(auction.map(auctionMapper::toGetResponse)))
+        );
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Response<PageResponse<GetAuctionResponse>>> getMyAuctions(
+            @AuthenticationPrincipal UUID userId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ) {
+        Page<Auction> auction = auctionService.findMyAuctions(userId, pageable);
+
+        return ResponseEntity.ok(
+                Response.success(PageResponse.from(auction.map(auctionMapper::toGetResponse)))
         );
     }
 

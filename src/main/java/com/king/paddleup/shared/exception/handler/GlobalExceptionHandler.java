@@ -9,11 +9,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(DomainException.class)
+    public ResponseEntity<Response<String>> handleDomainxception(DomainException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
     @ExceptionHandler(AuctionNotFoundException.class)
     public ResponseEntity<Response<String>> handleAuctionNotFoundException(AuctionNotFoundException ex) {
         return new ResponseEntity<>(
                 Response.error(ex.getMessage()),
-                HttpStatus.BAD_REQUEST
+                HttpStatus.NOT_FOUND
         );
     }
 
@@ -37,7 +46,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Response<String>> handleUserNotFoundException(UserNotFoundException ex) {
         return new ResponseEntity<>(
                 Response.error(ex.getMessage()),
-                HttpStatus.BAD_REQUEST
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(UserIsSuspendedException.class)
+    public ResponseEntity<Response<String>> handleUserIsSuspendedException(UserIsSuspendedException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.FORBIDDEN
         );
     }
 

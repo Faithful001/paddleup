@@ -4,10 +4,7 @@ import com.king.paddleup.domain.auction.enums.AuctionStatus;
 import com.king.paddleup.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -36,6 +33,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Auction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

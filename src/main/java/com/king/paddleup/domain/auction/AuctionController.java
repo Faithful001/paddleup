@@ -1,5 +1,7 @@
 package com.king.paddleup.domain.auction;
 
+import com.king.paddleup.domain.auction.dto.CreateAuctionRequest;
+import com.king.paddleup.domain.auction.dto.GetAuctionResponse;
 import com.king.paddleup.domain.bid.Bid;
 import com.king.paddleup.domain.bid.BidMapper;
 import com.king.paddleup.domain.bid.BidService;
@@ -19,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,9 +31,38 @@ public class AuctionController {
 
     private final BidService bidService;
     private final BidMapper bidMapper;
+    private final AuctionService auctionService;
+    private final AuctionMapper auctionMapper;
+
+    @PostMapping
+    public ResponseEntity<Response<GetAuctionResponse>> create(@AuthenticationPrincipal UUID id, @Valid @RequestBody CreateAuctionRequest payload) {
+        Auction auction = auctionService.create(id, payload);
+
+        return ResponseEntity.ok(
+        Response.success(auctionMapper.toGetResponse(auction))
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Response<List<GetAuctionResponse>>> getAll() {
+        List<Auction> auction = auctionService.findAll();
+
+        return ResponseEntity.ok(
+        Response.success(auctionMapper.toGetResponses(auction))
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Response<GetAuctionResponse>> getById(@PathVariable UUID id) {
+        Auction auction = auctionService.findById(id);
+
+        return ResponseEntity.ok(
+        Response.success(auctionMapper.toGetResponse(auction))
+        );
+    }
 
     @PostMapping("/{id}/bids")
-    public ResponseEntity<Response<CreateBidResponse>> create(
+    public ResponseEntity<Response<CreateBidResponse>> createBid(
             @AuthenticationPrincipal UUID userId,
             @PathVariable UUID id,
             @Valid @RequestBody CreateBidRequest request) {
@@ -43,8 +75,7 @@ public class AuctionController {
     }
 
     @GetMapping("/{id}/bids")
-    public ResponseEntity<Response<PageResponse<GetBidResponse>>> findAll(
-            @AuthenticationPrincipal UUID userId,
+    public ResponseEntity<Response<PageResponse<GetBidResponse>>> findAllBids(
             @PathVariable UUID id,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
             Pageable pageable

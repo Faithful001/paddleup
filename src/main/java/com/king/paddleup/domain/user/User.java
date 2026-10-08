@@ -33,6 +33,9 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    private Boolean isSuspended = false;
+
+    @Column(nullable = false)
     private Instant createdAt;
 
     @Column

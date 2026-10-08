@@ -1,4 +1,4 @@
-package com.king.paddleup.infrastructure.jwt;
+package com.king.paddleup.infrastructure.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

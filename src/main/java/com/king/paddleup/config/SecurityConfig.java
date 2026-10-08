@@ -1,9 +1,12 @@
 package com.king.paddleup.config;
 
-import com.king.paddleup.infrastructure.jwt.JwtAuthenticationFilter;
+import com.king.paddleup.infrastructure.security.AccountStatusFilter;
+import com.king.paddleup.infrastructure.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AccountStatusFilter accountStatusFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,22 +37,22 @@ public class SecurityConfig {
                                 "/v3/api-docs.yaml",
                                 "/error"
                         ).permitAll()
-                        .requestMatchers("/transactions/**").hasAnyRole("USER", "SERVICE")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(accountStatusFilter, JwtAuthenticationFilter.class)
                 .exceptionHandling(
                         ex ->
                                 ex.authenticationEntryPoint((request, response, authException) -> {
-                                    response.setStatus(401);
-                                    response.setContentType("application/json");
+                                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                                     response.getWriter().write(
                                             """
                                                     {"success": "false", "statusCode": 401, "message": "Unauthorized", "data": null}
                                                     """);
                                 }).accessDeniedHandler((request, response, accessDeniedException) -> {
-                                    response.setStatus(403);
-                                    response.setContentType("application/json");
+                                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                                     response.getWriter().write("""
                                             {"success":false,"statusCode":403,"message":"Access denied", data: null}
                                             """);

@@ -113,4 +113,12 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED
         );
     }
+
+    @ExceptionHandler(CannotFollowSelfException.class)
+    public ResponseEntity<Response<String>> handleCannotFollowSelfException(CannotFollowSelfException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 }

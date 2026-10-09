@@ -23,4 +23,14 @@ public interface AuctionRepository extends JpaRepository<Auction, UUID> {
 
     @EntityGraph(attributePaths = "seller")
     Page<Auction> findAllBySellerId(UUID sellerId, Pageable pageable);
+
+    @EntityGraph(attributePaths = "seller")
+    Page<Auction> findAllBySellerIdAndStatusNot(UUID sellerId, com.king.paddleup.domain.auction.enums.AuctionStatus status, Pageable pageable);
+
+    @EntityGraph(attributePaths = "seller")
+    Optional<Auction> findByIdAndSellerId(UUID id, UUID sellerId);
+
+    long countBySellerId(UUID sellerId);
+
+    long countBySellerIdAndStatusNot(UUID sellerId, com.king.paddleup.domain.auction.enums.AuctionStatus status);
 }

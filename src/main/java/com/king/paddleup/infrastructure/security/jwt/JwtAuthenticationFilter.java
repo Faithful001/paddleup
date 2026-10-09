@@ -1,7 +1,7 @@
 package com.king.paddleup.infrastructure.security.jwt;
 
 import com.king.paddleup.domain.token.TokenService;
-import com.king.paddleup.domain.token.TokenType;
+import com.king.paddleup.domain.token.enums.TokenType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

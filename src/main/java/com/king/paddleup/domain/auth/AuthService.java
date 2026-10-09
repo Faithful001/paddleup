@@ -2,7 +2,7 @@ package com.king.paddleup.domain.auth;
 
 import com.king.paddleup.domain.auth.dto.*;
 import com.king.paddleup.domain.token.TokenService;
-import com.king.paddleup.domain.token.TokenType;
+import com.king.paddleup.domain.token.enums.TokenType;
 import com.king.paddleup.domain.user.User;
 import com.king.paddleup.domain.user.UserRepository;
 import com.king.paddleup.infrastructure.email.EmailSender;

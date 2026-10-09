@@ -1,5 +1,6 @@
 package com.king.paddleup.domain.token;
 
+import com.king.paddleup.domain.token.enums.TokenType;
 import com.king.paddleup.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;

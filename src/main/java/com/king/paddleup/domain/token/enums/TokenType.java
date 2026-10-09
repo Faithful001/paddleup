@@ -1,4 +1,4 @@
-package com.king.paddleup.domain.token;
+package com.king.paddleup.domain.token.enums;
 
 public enum TokenType {
     ACCESS,

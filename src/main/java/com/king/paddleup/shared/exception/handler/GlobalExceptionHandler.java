@@ -90,4 +90,27 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(EmailDeliveryException.class)
+    public ResponseEntity<Response<String>> handleEmailDeliveryException(EmailDeliveryException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Response<String>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<Response<String>> handleInvalidTokenException(InvalidTokenException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
 }

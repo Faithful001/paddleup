@@ -21,13 +21,34 @@ public class JwtService {
         return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
     }
 
+    public String generateAccessToken(UUID userId, String email) {
+        return buildToken(userId, email, "ACCESS", jwtProperties.getAccessTokenExpirationMs());
+    }
+
+    public String generateRefreshToken(UUID userId, String email) {
+        return buildToken(userId, email, "REFRESH", jwtProperties.getRefreshTokenExpirationMs());
+    }
+
+    public String generateEmailVerificationToken(UUID userId, String email) {
+        return buildToken(userId, email, "EMAIL_VERIFICATION", jwtProperties.getEmailVerificationTokenExpirationMs());
+    }
+
+    public String generatePasswordResetToken(UUID userId, String email) {
+        return buildToken(userId, email, "PASSWORD_RESET", jwtProperties.getPasswordResetTokenExpirationMs());
+    }
+
     public String generateToken(UUID userId, String email) {
+        return generateAccessToken(userId, email);
+    }
+
+    private String buildToken(UUID userId, String email, String type, long expirationMs) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + jwtProperties.getExpirationMs());
+        Date expiry = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .claim("email", email)
+                .claim("type", type)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -42,6 +63,14 @@ public class JwtService {
         return parseClaims(token).get("email", String.class);
     }
 
+    public String extractTokenType(String token) {
+        return parseClaims(token).get("type", String.class);
+    }
+
+    public Date extractExpiration(String token) {
+        return parseClaims(token).getExpiration();
+    }
+
     public boolean isTokenValid(String token) {
         try {
             Claims claims = parseClaims(token);
@@ -51,7 +80,7 @@ public class JwtService {
         }
     }
 
-    private Claims parseClaims(String token) {
+    public Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()

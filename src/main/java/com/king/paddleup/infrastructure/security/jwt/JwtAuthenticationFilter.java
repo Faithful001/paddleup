@@ -1,6 +1,7 @@
-
 package com.king.paddleup.infrastructure.security.jwt;
 
+import com.king.paddleup.domain.token.TokenService;
+import com.king.paddleup.domain.token.TokenType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final TokenService tokenService;
 
     @Override
     protected void doFilterInternal(
@@ -38,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring("Bearer ".length());
 
-        if (jwtService.isTokenValid(token)) {
+        if (jwtService.isTokenValid(token) && tokenService.isTokenValid(token, TokenType.ACCESS)) {
             UUID userId = jwtService.extractUserId(token);
 
             UsernamePasswordAuthenticationToken authentication =

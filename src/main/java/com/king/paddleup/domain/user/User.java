@@ -34,6 +34,14 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @Builder.Default
+    private Boolean isEmailVerified = false;
+
+    @Column
+    private Instant emailVerifiedAt;
+
+    @Column(nullable = false)
+    @Builder.Default
     private Boolean isSuspended = false;
 
     @Column

@@ -1,4 +1,4 @@
-package com.king.paddleup.infrastructure.email.event;
+package com.king.paddleup.infrastructure.email.listener;
 
 import com.king.paddleup.infrastructure.email.dto.EmailMessage;
 import com.king.paddleup.infrastructure.email.producer.EmailProducer;

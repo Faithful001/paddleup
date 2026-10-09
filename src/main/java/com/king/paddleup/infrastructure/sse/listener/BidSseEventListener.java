@@ -1,4 +1,4 @@
-package com.king.paddleup.infrastructure.sse.event;
+package com.king.paddleup.infrastructure.sse.listener;
 
 import com.king.paddleup.domain.bid.dto.BidPlacedEvent;
 import com.king.paddleup.infrastructure.sse.BidSseService;

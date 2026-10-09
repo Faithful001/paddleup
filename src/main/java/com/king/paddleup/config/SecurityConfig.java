@@ -23,11 +23,16 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AccountStatusFilter accountStatusFilter;
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
@@ -40,24 +45,38 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(accountStatusFilter, JwtAuthenticationFilter.class)
-                .exceptionHandling(
-                        ex ->
-                                ex.authenticationEntryPoint((request, response, authException) -> {
-                                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                                    response.getWriter().write(
-                                            """
-                                                    {"success": "false", "statusCode": 401, "message": "Unauthorized", "data": null}
-                                                    """);
-                                }).accessDeniedHandler((request, response, accessDeniedException) -> {
-                                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                                    response.getWriter().write("""
-                                            {"success":false,"statusCode":403,"message":"Access denied", data: null}
-                                            """);
-                                }));
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterAfter(
+                        accountStatusFilter,
+                        JwtAuthenticationFilter.class
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, exception) -> {
+                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.getWriter().write("""
+                            {
+                              "success": false,
+                              "message": "Unauthorized",
+                              "data": null
+                            }
+                            """);
+                        })
+                        .accessDeniedHandler((request, response, exception) -> {
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.getWriter().write("""
+                            {
+                              "success": false,
+                              "message": "Access denied",
+                              "data": null
+                            }
+                            """);
+                        })
+                );
 
         return http.build();
     }

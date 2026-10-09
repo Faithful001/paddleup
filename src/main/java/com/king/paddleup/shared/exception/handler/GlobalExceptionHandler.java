@@ -82,4 +82,12 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(UserUnauthorizedException.class)
+    public ResponseEntity<Response<String>> handleUserUnauthorizedException(UserUnauthorizedException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
 }

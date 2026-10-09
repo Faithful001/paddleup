@@ -1,5 +1,6 @@
 package com.king.paddleup.infrastructure.security.jwt;
 
+import com.king.paddleup.domain.token.enums.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,26 +23,26 @@ public class JwtService {
     }
 
     public String generateAccessToken(UUID userId, String email) {
-        return buildToken(userId, email, "ACCESS", jwtProperties.getAccessTokenExpirationMs());
+        return buildToken(userId, email, TokenType.ACCESS, jwtProperties.getAccessTokenExpirationMs());
     }
 
     public String generateRefreshToken(UUID userId, String email) {
-        return buildToken(userId, email, "REFRESH", jwtProperties.getRefreshTokenExpirationMs());
+        return buildToken(userId, email, TokenType.REFRESH, jwtProperties.getRefreshTokenExpirationMs());
     }
 
     public String generateEmailVerificationToken(UUID userId, String email) {
-        return buildToken(userId, email, "EMAIL_VERIFICATION", jwtProperties.getEmailVerificationTokenExpirationMs());
+        return buildToken(userId, email, TokenType.EMAIL_VERIFICATION, jwtProperties.getEmailVerificationTokenExpirationMs());
     }
 
     public String generatePasswordResetToken(UUID userId, String email) {
-        return buildToken(userId, email, "PASSWORD_RESET", jwtProperties.getPasswordResetTokenExpirationMs());
+        return buildToken(userId, email, TokenType.PASSWORD_RESET, jwtProperties.getPasswordResetTokenExpirationMs());
     }
 
     public String generateToken(UUID userId, String email) {
         return generateAccessToken(userId, email);
     }
 
-    private String buildToken(UUID userId, String email, String type, long expirationMs) {
+    private String buildToken(UUID userId, String email, TokenType type, long expirationMs) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
 

@@ -5,13 +5,14 @@ import com.king.paddleup.domain.token.TokenService;
 import com.king.paddleup.domain.token.enums.TokenType;
 import com.king.paddleup.domain.user.User;
 import com.king.paddleup.domain.user.UserRepository;
-import com.king.paddleup.infrastructure.email.EmailSender;
+import com.king.paddleup.infrastructure.email.dto.EmailMessage;
 import com.king.paddleup.infrastructure.security.CustomUserDetails;
 import com.king.paddleup.infrastructure.security.jwt.JwtProperties;
 import com.king.paddleup.infrastructure.security.jwt.JwtService;
 import com.king.paddleup.shared.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +34,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final JwtProperties jwtProperties;
     private final TokenService tokenService;
-    private final EmailSender emailSender;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -67,15 +68,11 @@ public class AuthService {
         tokenService.saveToken(user, accessToken, TokenType.ACCESS, accessExpiry);
         tokenService.saveToken(user, refreshToken, TokenType.REFRESH, refreshExpiry);
 
-        // Generate verification token and try sending verification email
-        try {
-            String verificationToken = jwtService.generateEmailVerificationToken(user.getId(), user.getEmail());
-            Instant verifyExpiry = Instant.now().plusMillis(jwtProperties.getEmailVerificationTokenExpirationMs());
-            tokenService.saveToken(user, verificationToken, TokenType.EMAIL_VERIFICATION, verifyExpiry);
-            sendVerificationEmail(user.getEmail(), verificationToken);
-        } catch (Exception e) {
-            log.warn("Failed to send verification email upon registration: {}", e.getMessage());
-        }
+        // Generate verification token and publish email event
+        String verificationToken = jwtService.generateEmailVerificationToken(user.getId(), user.getEmail());
+        Instant verifyExpiry = Instant.now().plusMillis(jwtProperties.getEmailVerificationTokenExpirationMs());
+        tokenService.saveToken(user, verificationToken, TokenType.EMAIL_VERIFICATION, verifyExpiry);
+        sendVerificationEmail(user.getEmail(), verificationToken);
 
         return new AuthResponse(
                 accessToken,
@@ -197,12 +194,7 @@ public class AuthService {
         Instant expiresAt = Instant.now().plusMillis(jwtProperties.getPasswordResetTokenExpirationMs());
         tokenService.saveToken(user, resetToken, TokenType.PASSWORD_RESET, expiresAt);
 
-        try {
-            sendPasswordResetEmail(user.getEmail(), resetToken);
-        } catch (Exception e) {
-            log.error("Failed to send password reset email: {}", e.getMessage());
-            throw new EmailDeliveryException("Failed to send password reset email");
-        }
+        sendPasswordResetEmail(user.getEmail(), resetToken);
     }
 
     @Transactional
@@ -271,12 +263,7 @@ public class AuthService {
         Instant verifyExpiry = Instant.now().plusMillis(jwtProperties.getEmailVerificationTokenExpirationMs());
         tokenService.saveToken(user, verificationToken, TokenType.EMAIL_VERIFICATION, verifyExpiry);
 
-        try {
-            sendVerificationEmail(user.getEmail(), verificationToken);
-        } catch (Exception e) {
-            log.error("Failed to resend verification email: {}", e.getMessage());
-            throw new EmailDeliveryException("Failed to resend verification email");
-        }
+        sendVerificationEmail(user.getEmail(), verificationToken);
     }
 
     private void sendVerificationEmail(String email, String token) {
@@ -284,7 +271,7 @@ public class AuthService {
         String html = "<p>Welcome to PaddleUp!</p>" +
                 "<p>Please verify your email address using the following verification token:</p>" +
                 "<p><strong>" + token + "</strong></p>";
-        emailSender.send(email, subject, html);
+        eventPublisher.publishEvent(new EmailMessage(email, subject, html));
     }
 
     private void sendPasswordResetEmail(String email, String token) {
@@ -293,7 +280,7 @@ public class AuthService {
                 "<p>Please use the following token to reset your password:</p>" +
                 "<p><strong>" + token + "</strong></p>" +
                 "<p>This token will expire in 1 hour.</p>";
-        emailSender.send(email, subject, html);
+        eventPublisher.publishEvent(new EmailMessage(email, subject, html));
     }
 
     private AuthResponse.UserDto toUserDto(User user) {

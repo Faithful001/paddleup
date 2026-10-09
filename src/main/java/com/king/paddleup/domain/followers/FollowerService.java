@@ -1,17 +1,20 @@
 package com.king.paddleup.domain.followers;
 
 import com.king.paddleup.domain.followers.dto.FollowUserResponse;
+import com.king.paddleup.domain.followers.dto.FollowedEvent;
 import com.king.paddleup.domain.user.User;
 import com.king.paddleup.domain.user.UserRepository;
 import com.king.paddleup.shared.exception.CannotFollowSelfException;
 import com.king.paddleup.shared.exception.UserIsSuspendedException;
 import com.king.paddleup.shared.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -20,6 +23,7 @@ public class FollowerService {
 
     private final FollowerRepository followerRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher events;
 
     @Transactional
     public void follow(UUID currentUserId, UUID targetUserId) {
@@ -46,7 +50,14 @@ public class FollowerService {
                 .following(targetUser)
                 .build();
 
-        followerRepository.save(follower);
+        Follower saved = followerRepository.save(follower);
+
+        events.publishEvent(new FollowedEvent(
+                currentUserId,
+                currentUser.getUsername(),
+                targetUserId,
+                saved.getCreatedAt() != null ? saved.getCreatedAt() : Instant.now()
+        ));
     }
 
     @Transactional

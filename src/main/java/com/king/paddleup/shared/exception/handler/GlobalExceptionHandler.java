@@ -121,4 +121,36 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST
         );
     }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<Response<String>> handleCommentNotFoundException(CommentNotFoundException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(InvalidCommentOperationException.class)
+    public ResponseEntity<Response<String>> handleInvalidCommentOperationException(InvalidCommentOperationException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(InvalidLikeOperationException.class)
+    public ResponseEntity<Response<String>> handleInvalidLikeOperationException(InvalidLikeOperationException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(NotificationNotFoundException.class)
+    public ResponseEntity<Response<String>> handleNotificationNotFoundException(NotificationNotFoundException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.NOT_FOUND
+        );
+    }
 }

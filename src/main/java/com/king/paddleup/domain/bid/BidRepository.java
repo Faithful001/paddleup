@@ -17,4 +17,9 @@ public interface BidRepository extends JpaRepository<Bid, UUID> {
 
         @EntityGraph(attributePaths = "bidder")
         Page<Bid> findByAuctionId(UUID auctionId, Pageable pageable);
+
+        boolean existsByBidderIdAndAuctionId(UUID bidderId, UUID auctionId);
+
+        @EntityGraph(attributePaths = "bidder")
+        Optional<Bid> findFirstByAuctionIdAndIdNotOrderByAmountDesc(UUID auctionId, UUID currentBidId);
 }

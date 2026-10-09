@@ -1,4 +1,4 @@
-package com.king.paddleup.config;
+package com.king.paddleup.infrastructure.redis;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

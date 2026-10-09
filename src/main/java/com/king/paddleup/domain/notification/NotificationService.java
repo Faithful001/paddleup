@@ -2,6 +2,7 @@ package com.king.paddleup.domain.notification;
 
 import com.king.paddleup.domain.notification.dto.NotificationCreatedEvent;
 import com.king.paddleup.domain.notification.dto.NotificationResponse;
+import com.king.paddleup.domain.notification.enums.NotificationType;
 import com.king.paddleup.domain.user.User;
 import com.king.paddleup.domain.user.UserRepository;
 import com.king.paddleup.shared.exception.NotificationNotFoundException;

@@ -1,4 +1,4 @@
-package com.king.paddleup.domain.notification;
+package com.king.paddleup.domain.notification.enums;
 
 public enum NotificationType {
     BID_PLACED,

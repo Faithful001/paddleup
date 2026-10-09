@@ -2,11 +2,10 @@ package com.king.paddleup.domain.notification.listener;
 
 import com.king.paddleup.domain.auction.Auction;
 import com.king.paddleup.domain.auction.AuctionRepository;
-import com.king.paddleup.domain.comment.Comment;
 import com.king.paddleup.domain.comment.CommentRepository;
 import com.king.paddleup.domain.comment.dto.CommentCreatedEvent;
 import com.king.paddleup.domain.notification.NotificationService;
-import com.king.paddleup.domain.notification.NotificationType;
+import com.king.paddleup.domain.notification.enums.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -2,11 +2,10 @@ package com.king.paddleup.domain.notification.listener;
 
 import com.king.paddleup.domain.auction.Auction;
 import com.king.paddleup.domain.auction.AuctionRepository;
-import com.king.paddleup.domain.bid.Bid;
 import com.king.paddleup.domain.bid.BidRepository;
 import com.king.paddleup.domain.bid.dto.BidPlacedEvent;
 import com.king.paddleup.domain.notification.NotificationService;
-import com.king.paddleup.domain.notification.NotificationType;
+import com.king.paddleup.domain.notification.enums.NotificationType;
 import com.king.paddleup.domain.user.User;
 import com.king.paddleup.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;

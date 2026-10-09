@@ -1,5 +1,6 @@
 package com.king.paddleup.domain.notification;
 
+import com.king.paddleup.domain.notification.enums.NotificationType;
 import com.king.paddleup.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;

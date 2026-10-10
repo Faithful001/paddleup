@@ -1,6 +1,7 @@
 package com.king.paddleup.domain.auction;
 
 import com.king.paddleup.domain.auction.enums.AuctionStatus;
+import com.king.paddleup.domain.media.dto.MediaItem;
 import com.king.paddleup.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -16,10 +17,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "auctions", check = {
-        @CheckConstraint(
-                name = "chk_image_urls_max",
-                constraint = "cardinality(image_urls) <= 10"
-        ),
         @CheckConstraint(
                 name = "chk_auctions_status",
                 constraint = "status in ('DRAFT', 'ACTIVE', 'CLOSED', 'ENDED', 'AWAITING_PAYMENT', 'COMPLETED')"
@@ -58,10 +55,10 @@ public class Auction {
     @Column(nullable = false, length = 20)
     private AuctionStatus status = AuctionStatus.ACTIVE;
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Size(max = 10)
-    @Column(name = "image_urls", columnDefinition = "varchar(500)[]", nullable = false)
-    private List<String> imageUrls = new ArrayList<>();
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private List<MediaItem> media = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)

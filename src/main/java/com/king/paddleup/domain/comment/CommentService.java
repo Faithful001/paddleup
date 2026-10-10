@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,11 +58,18 @@ public class CommentService {
             }
         }
 
+        boolean hasContent = payload.content() != null && !payload.content().trim().isEmpty();
+        boolean hasMedia = payload.media() != null && !payload.media().isEmpty();
+        if (!hasContent && !hasMedia) {
+            throw new InvalidCommentOperationException("Comment must contain either text or media");
+        }
+
         Comment comment = Comment.builder()
                 .auction(auction)
                 .author(user)
                 .parent(parent)
-                .content(payload.content())
+                .content(hasContent ? payload.content().trim() : "")
+                .media(hasMedia ? payload.media() : Collections.emptyList())
                 .build();
 
         Comment saved = commentRepository.save(comment);
@@ -74,6 +82,7 @@ public class CommentService {
                 userId,
                 user.getUsername(),
                 saved.getContent(),
+                saved.getMedia(),
                 payload.parentId(),
                 userId.equals(sellerId),
                 saved.getCreatedAt()
@@ -128,6 +137,7 @@ public class CommentService {
         // Soft delete: keep the node so replies aren't orphaned
         comment.setIsDeleted(true);
         comment.setContent("");
+        comment.setMedia(Collections.emptyList());
         commentRepository.save(comment);
     }
 

@@ -1,23 +1,20 @@
-package com.king.paddleup.infrastructure.websocket;
+package com.king.paddleup.infrastructure.sse.listener;
 
 import com.king.paddleup.domain.comment.dto.CommentCreatedEvent;
+import com.king.paddleup.infrastructure.sse.CommentSseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-public class CommentCreatedPublisher {
+public class CommentSseEventListener {
 
-    private final SimpMessagingTemplate messagingTemplate;
+    private final CommentSseService commentSseService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
     public void onCommentCreated(CommentCreatedEvent event) {
-        messagingTemplate.convertAndSend(
-                "/topic/auction/" + event.auctionId() + "/comments",
-                event
-        );
+        commentSseService.sendCommentEvent(event);
     }
 }

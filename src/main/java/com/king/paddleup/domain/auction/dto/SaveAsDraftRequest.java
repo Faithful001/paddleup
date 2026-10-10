@@ -1,6 +1,8 @@
 package com.king.paddleup.domain.auction.dto;
 
 import com.king.paddleup.domain.auction.enums.AuctionStatus;
+import com.king.paddleup.domain.media.dto.MediaItem;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +31,7 @@ public record SaveAsDraftRequest(
 
         @NotNull AuctionStatus status,
 
-        List<String> imageUrls,
+        List<@Valid MediaItem> media,
 
         Instant endsAt
 ) {

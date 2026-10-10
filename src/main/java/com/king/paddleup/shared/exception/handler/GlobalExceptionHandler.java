@@ -10,6 +10,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<Response<String>> handleFileUploadException(FileUploadException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<Response<String>> handleDomainxception(DomainException ex) {
         return new ResponseEntity<>(

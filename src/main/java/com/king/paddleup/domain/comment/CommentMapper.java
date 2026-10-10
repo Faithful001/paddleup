@@ -3,9 +3,12 @@ package com.king.paddleup.domain.comment;
 import com.king.paddleup.domain.bid.BidRepository;
 import com.king.paddleup.domain.comment.dto.CommentAuthorDto;
 import com.king.paddleup.domain.comment.dto.CommentResponse;
+import com.king.paddleup.domain.media.dto.MediaItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -36,6 +39,10 @@ public class CommentMapper {
                 ? DELETED_CONTENT_PLACEHOLDER
                 : comment.getContent();
 
+        List<MediaItem> displayMedia = Boolean.TRUE.equals(comment.getIsDeleted())
+                ? Collections.emptyList()
+                : (comment.getMedia() != null ? comment.getMedia() : Collections.emptyList());
+
         long replyCount = comment.getParent() == null
                 ? commentRepository.countReplies(comment.getId())
                 : 0;
@@ -45,6 +52,7 @@ public class CommentMapper {
                 auctionId,
                 author,
                 displayContent,
+                displayMedia,
                 comment.getParent() != null ? comment.getParent().getId() : null,
                 replyCount,
                 comment.getIsDeleted(),

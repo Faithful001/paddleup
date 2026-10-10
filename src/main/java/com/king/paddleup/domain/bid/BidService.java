@@ -26,6 +26,7 @@ public class BidService {
     private final UserRepository userRepository;
     private final ApplicationEventPublisher events;
 
+    @Transactional
     public Bid create(CreateBidRequest payload, UUID auctionId, UUID bidderId) {
         Auction auction = auctionRepository.findByIdForUpdate(auctionId)
                 .orElseThrow(()-> new AuctionNotFoundException("Auction not found"));
@@ -37,7 +38,7 @@ public class BidService {
             throw new AuctionClosedException("Auction is closed");
         }
 
-        if (auction.getSeller().getId() == bidderId) {
+        if (auction.getSeller().getId().equals(bidderId)) {
             throw new InvalidBidException("You cannot bid on your own auction");
         }
 

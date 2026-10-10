@@ -1,9 +1,12 @@
 package com.king.paddleup.domain.comment;
 
 import com.king.paddleup.domain.auction.Auction;
+import com.king.paddleup.domain.media.dto.MediaItem;
 import com.king.paddleup.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -41,6 +44,11 @@ public class Comment {
 
     @Column(nullable = false, length = 1000)
     private String content;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private List<MediaItem> media = new ArrayList<>();
 
     @Column(nullable = false)
     @Builder.Default

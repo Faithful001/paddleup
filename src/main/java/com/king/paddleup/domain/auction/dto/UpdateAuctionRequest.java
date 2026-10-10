@@ -1,5 +1,7 @@
 package com.king.paddleup.domain.auction.dto;
 
+import com.king.paddleup.domain.media.dto.MediaItem;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,8 +30,7 @@ public record UpdateAuctionRequest(
         @DecimalMin(value = "0.01")
         BigDecimal minIncrement,
 
-        @Size(max = 10)
-        List<@NotBlank String> imageUrls,
+        List<@Valid MediaItem> media,
 
         @NotNull
         Instant endsAt

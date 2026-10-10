@@ -2,6 +2,7 @@ package com.king.paddleup.domain.comment;
 
 import com.king.paddleup.domain.comment.dto.CommentResponse;
 import com.king.paddleup.domain.comment.dto.CreateCommentRequest;
+import com.king.paddleup.infrastructure.sse.CommentSseService;
 import com.king.paddleup.shared.response.PageResponse;
 import com.king.paddleup.shared.response.Response;
 import jakarta.validation.Valid;
@@ -11,9 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +28,7 @@ public class CommentController {
 
     private final CommentService commentService;
     private final CommentMapper commentMapper;
+    private final CommentSseService commentSseService;
 
     @PostMapping
     public ResponseEntity<Response<CommentResponse>> create(
@@ -75,5 +79,10 @@ public class CommentController {
         commentService.delete(auctionId, commentId, userId);
 
         return ResponseEntity.ok(Response.message("Comment deleted successfully"));
+    }
+
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter streamComments(@PathVariable UUID auctionId) {
+        return commentSseService.subscribe(auctionId);
     }
 }

@@ -1,9 +1,7 @@
 package com.king.paddleup.domain.auction.dto;
 
-import com.king.paddleup.domain.auction.Auction;
 import com.king.paddleup.domain.auction.enums.AuctionStatus;
-import lombok.Getter;
-import lombok.Setter;
+import com.king.paddleup.domain.media.dto.MediaItem;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,7 +12,7 @@ public record GetAuctionResponse(
         UUID id,
         String title,
         String description,
-        List<String> imageUrls,
+        List<MediaItem> media,
         AuctionStatus status,
         BigDecimal startingPrice,
         BigDecimal minIncrement,

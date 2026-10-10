@@ -38,7 +38,7 @@ public class AuctionService {
                 .reservePrice(payload.reservePrice())
                 .minIncrement(payload.minIncrement())
                 .status(payload.status())
-                .imageUrls(payload.imageUrls())
+                .media(payload.media())
                 .seller(user)
                 .endsAt(payload.endsAt())
                 .build();
@@ -58,7 +58,7 @@ public class AuctionService {
                 .reservePrice(payload.reservePrice())
                 .minIncrement(payload.minIncrement())
                 .status(payload.status())
-                .imageUrls(payload.imageUrls())
+                .media(payload.media())
                 .seller(user)
                 .endsAt(payload.endsAt())
                 .build();
@@ -98,7 +98,7 @@ public class AuctionService {
         auction.setStartingPrice(payload.startingPrice());
         auction.setReservePrice(payload.reservePrice());
         auction.setMinIncrement(payload.minIncrement());
-        auction.setImageUrls(payload.imageUrls());
+        auction.setMedia(payload.media());
         auction.setEndsAt(payload.endsAt());
 
         return auction;

@@ -1,6 +1,7 @@
 package com.king.paddleup.infrastructure.paymentgateway.bachs;
 
 import com.king.paddleup.infrastructure.paymentgateway.bachs.dto.PostChargeRequest;
+import com.king.paddleup.infrastructure.paymentgateway.bachs.dto.PostChargeResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClient;
 
@@ -25,7 +26,7 @@ public class BachsClient {
         return restClient;
     }
 
-    public void postCharge(PostChargeRequest postChargeRequest) {
+    public PostChargeResponse postCharge(PostChargeRequest postChargeRequest) {
         restClient.post().uri("/charges")
                 .body(postChargeRequest);
     }

@@ -6,5 +6,4 @@ public record PostChargeRequest(
         String currency,
         String description,
         String reference
-) {
-}
+) {}

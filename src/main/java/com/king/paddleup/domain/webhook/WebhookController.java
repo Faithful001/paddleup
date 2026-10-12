@@ -17,7 +17,7 @@ import tools.jackson.databind.ObjectMapper;
 @RequestMapping("/webhooks")
 public class WebhookController {
 
-    private final BachsWebhookVerifier webhookVerifier;
+    private final BachsWebhookVerifier bachsWebhookVerifier;
     private final PaymentService paymentService;
     private final ObjectMapper objectMapper;
 
@@ -30,7 +30,7 @@ public class WebhookController {
     ) {
         String signature = (signatureV2 != null && !signatureV2.isBlank()) ? signatureV2 : signatureV1;
 
-        if (!webhookVerifier.verifySignature(rawBody, signature, timestamp)) {
+        if (!bachsWebhookVerifier.verifySignature(rawBody, signature, timestamp)) {
             log.warn("Bachs webhook signature verification failed");
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)

@@ -2,7 +2,6 @@ package com.king.paddleup.domain.payment;
 
 import com.king.paddleup.domain.payment.dto.InitiatePaymentRequest;
 import com.king.paddleup.domain.payment.dto.PaymentResponse;
-import com.king.paddleup.domain.payment.service.PaymentService;
 import com.king.paddleup.shared.response.Response;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.king.paddleup.domain.auth;
 
 import com.king.paddleup.domain.auth.dto.*;
-import com.king.paddleup.shared.exception.UserUnauthorizedException;
+import com.king.paddleup.domain.user.exception.UserUnauthorizedException;
 import com.king.paddleup.shared.response.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

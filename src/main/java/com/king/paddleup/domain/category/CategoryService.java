@@ -3,7 +3,7 @@ package com.king.paddleup.domain.category;
 import com.king.paddleup.domain.category.dto.CreateCategoryRequest;
 import com.king.paddleup.domain.category.dto.UpdateCategoryRequest;
 import com.king.paddleup.domain.user.UserRepository;
-import com.king.paddleup.shared.exception.CategoryNotFoundException;
+import com.king.paddleup.domain.category.exception.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

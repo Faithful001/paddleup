@@ -1,11 +1,9 @@
 package com.king.paddleup.domain.idempotency;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.king.paddleup.domain.idempotency.entity.IdempotencyRecord;
-import com.king.paddleup.domain.idempotency.entity.IdempotencyStatus;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import com.king.paddleup.domain.idempotency.enums.IdempotencyStatus;
 import com.king.paddleup.domain.idempotency.exception.IdempotencyConflictException;
-import com.king.paddleup.domain.idempotency.repository.IdempotencyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,18 +41,18 @@ public class IdempotencyService {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(json.getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(hashBytes);
-        } catch (NoSuchAlgorithmException | JsonProcessingException ex) {
+        } catch (NoSuchAlgorithmException | JacksonException ex) {
             log.error("Failed to compute SHA-256 hash for payload", ex);
             throw new IllegalStateException("Failed to calculate idempotency hash", ex);
         }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Optional<IdempotencyRecord> checkAndLock(String key, String target, String requestHash) {
-        Optional<IdempotencyRecord> existingOpt = idempotencyRepository.findByIdempotencyKey(key);
+    public Optional<Idempotency> checkAndLock(String key, String target, String requestHash) {
+        Optional<Idempotency> existingOpt = idempotencyRepository.findByIdempotencyKey(key);
 
         if (existingOpt.isPresent()) {
-            IdempotencyRecord existing = existingOpt.get();
+            Idempotency existing = existingOpt.get();
 
             if (!existing.getRequestHash().equals(requestHash)) {
                 throw new IdempotencyConflictException(
@@ -81,7 +79,7 @@ public class IdempotencyService {
             return Optional.empty();
         }
 
-        IdempotencyRecord newRecord = IdempotencyRecord.builder()
+        Idempotency newRecord = Idempotency.builder()
                 .idempotencyKey(key)
                 .target(target)
                 .requestHash(requestHash)
@@ -103,7 +101,7 @@ public class IdempotencyService {
                         ? str
                         : objectMapper.writeValueAsString(responsePayload);
                 record.setResponseBody(body);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 log.error("Failed to serialize response body for idempotency key {}", key, e);
                 record.setResponseBody(String.valueOf(responsePayload));
             }
@@ -135,13 +133,13 @@ public class IdempotencyService {
         }
 
         String hash = computeHash(requestPayload);
-        Optional<IdempotencyRecord> completed = checkAndLock(key, target, hash);
+        Optional<Idempotency> completed = checkAndLock(key, target, hash);
 
         if (completed.isPresent()) {
-            IdempotencyRecord record = completed.get();
+            Idempotency record = completed.get();
             try {
                 return objectMapper.readValue(record.getResponseBody(), responseClass);
-            } catch (JsonProcessingException ex) {
+            } catch (JacksonException ex) {
                 log.error("Failed to deserialize cached idempotent response for key {}", key, ex);
                 throw new IllegalStateException("Failed to parse cached response for idempotency key: " + key, ex);
             }

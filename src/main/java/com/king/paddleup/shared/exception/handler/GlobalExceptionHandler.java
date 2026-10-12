@@ -1,7 +1,19 @@
 package com.king.paddleup.shared.exception.handler;
 
+import com.king.paddleup.domain.auction.exception.*;
+import com.king.paddleup.domain.auth.exception.*;
+import com.king.paddleup.domain.bid.exception.*;
+import com.king.paddleup.domain.category.exception.*;
+import com.king.paddleup.domain.comment.exception.*;
+import com.king.paddleup.domain.followers.exception.*;
 import com.king.paddleup.domain.idempotency.exception.IdempotencyConflictException;
-import com.king.paddleup.shared.exception.*;
+import com.king.paddleup.domain.like.exception.*;
+import com.king.paddleup.domain.notification.exception.*;
+import com.king.paddleup.domain.upload.exception.*;
+import com.king.paddleup.domain.user.exception.*;
+import com.king.paddleup.infrastructure.email.exception.*;
+import com.king.paddleup.infrastructure.paymentgateway.exception.PaymentGatewayException;
+import com.king.paddleup.shared.exception.DomainException;
 import com.king.paddleup.shared.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -163,9 +175,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(com.king.paddleup.infrastructure.paymentgateway.exception.PaymentGatewayException.class)
+    @ExceptionHandler(PaymentGatewayException.class)
     public ResponseEntity<Response<String>> handlePaymentGatewayException(
-            com.king.paddleup.infrastructure.paymentgateway.exception.PaymentGatewayException ex) {
+            PaymentGatewayException ex) {
         return new ResponseEntity<>(
                 Response.error(ex.getMessage()),
                 HttpStatus.BAD_GATEWAY

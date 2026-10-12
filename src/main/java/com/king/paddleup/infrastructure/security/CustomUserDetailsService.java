@@ -1,7 +1,7 @@
 package com.king.paddleup.infrastructure.security;
 
 import com.king.paddleup.domain.user.UserRepository;
-import com.king.paddleup.shared.exception.UserUnauthorizedException;
+import com.king.paddleup.domain.user.exception.UserUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;

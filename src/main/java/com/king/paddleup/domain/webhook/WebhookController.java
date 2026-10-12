@@ -1,6 +1,6 @@
 package com.king.paddleup.domain.webhook;
 
-import com.king.paddleup.domain.payment.service.PaymentService;
+import com.king.paddleup.domain.payment.PaymentService;
 import com.king.paddleup.domain.webhook.dto.BachsWebhookEvent;
 import com.king.paddleup.infrastructure.paymentgateway.bachs.BachsWebhookVerifier;
 import com.king.paddleup.shared.response.Response;

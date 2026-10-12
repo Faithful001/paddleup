@@ -1,6 +1,6 @@
 package com.king.paddleup.infrastructure.email;
 
-import com.king.paddleup.shared.exception.EmailDeliveryException;
+import com.king.paddleup.infrastructure.email.exception.EmailDeliveryException;
 import com.resend.Resend;
 import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.SendEmailRequest;

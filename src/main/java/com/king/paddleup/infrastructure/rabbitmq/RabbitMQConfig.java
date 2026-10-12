@@ -3,7 +3,7 @@ package com.king.paddleup.infrastructure.rabbitmq;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +20,7 @@ public class RabbitMQConfig {
     public static final String EMAIL_ROUTING_KEY = "email.send";
     public static final String EMAIL_DLQ = "email.queue.dlq";
 
+//    ==== ORDER START ====
     @Bean
     public DirectExchange orderExchange() {
         return new DirectExchange(ORDER_EXCHANGE);
@@ -34,7 +35,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue deadLetterQueue() {
+    public Queue orderDeadLetterQueue() {
         return QueueBuilder.durable(ORDER_DLQ).build();
     }
 
@@ -42,6 +43,10 @@ public class RabbitMQConfig {
     public Binding orderBinding() {
         return BindingBuilder.bind(orderQueue()).to(orderExchange()).with(ORDER_ROUTING_KEY);
     }
+
+    //    ==== ORDER START ====
+
+    //    ==== EMAIL START ====
 
     @Bean
     public DirectExchange emailExchange() {
@@ -66,9 +71,11 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(emailQueue()).to(emailExchange()).with(EMAIL_ROUTING_KEY);
     }
 
+    //    ==== EMAIL START ====
+
     @Bean
     public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+        return new JacksonJsonMessageConverter();
     }
 
     @Bean

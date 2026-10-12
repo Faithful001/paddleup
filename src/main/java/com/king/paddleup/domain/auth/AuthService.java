@@ -6,7 +6,6 @@ import com.king.paddleup.domain.token.enums.TokenType;
 import com.king.paddleup.domain.user.User;
 import com.king.paddleup.domain.user.UserRepository;
 import com.king.paddleup.infrastructure.email.dto.EmailMessage;
-import com.king.paddleup.infrastructure.security.CustomUserDetails;
 import com.king.paddleup.infrastructure.security.jwt.JwtProperties;
 import com.king.paddleup.infrastructure.security.jwt.JwtService;
 import com.king.paddleup.domain.auth.exception.InvalidTokenException;
@@ -18,9 +17,6 @@ import com.king.paddleup.shared.exception.DomainException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +31,6 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final JwtProperties jwtProperties;
     private final TokenService tokenService;
@@ -89,20 +84,12 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.identifier(),
-                        request.password()
-                )
-        );
+        User user = userRepository.findByUsernameOrEmail(request.identifier(), request.identifier())
+                .orElseThrow(() -> new UserUnauthorizedException("Invalid username or password"));
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        if (userDetails == null) {
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new UserUnauthorizedException("Invalid username or password");
         }
-
-        User user = userRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (Boolean.TRUE.equals(user.getIsSuspended())) {
             throw new UserIsSuspendedException("Your account is suspended");

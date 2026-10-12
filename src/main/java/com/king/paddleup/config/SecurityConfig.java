@@ -23,7 +23,6 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AccountStatusFilter accountStatusFilter;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
@@ -43,7 +42,7 @@ public class SecurityConfig {
                                 "/error",
                                 "/auctions/*/bids/stream",
                                 "/auctions/*/comments/stream",
-                                "/webhooks/bachs"
+                                "/webhooks/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

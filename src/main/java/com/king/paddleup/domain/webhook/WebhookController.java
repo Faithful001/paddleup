@@ -1,7 +1,7 @@
 package com.king.paddleup.domain.webhook;
 
 import com.king.paddleup.domain.payment.PaymentService;
-import com.king.paddleup.domain.webhook.dto.BachsWebhookEvent;
+import com.king.paddleup.infrastructure.paymentgateway.bachs.dto.BachsWebhookEvent;
 import com.king.paddleup.infrastructure.paymentgateway.bachs.BachsWebhookVerifier;
 import com.king.paddleup.shared.response.Response;
 import lombok.RequiredArgsConstructor;

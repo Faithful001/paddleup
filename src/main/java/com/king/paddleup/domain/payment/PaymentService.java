@@ -15,7 +15,7 @@ import com.king.paddleup.infrastructure.paymentgateway.PaymentGatewayProvider;
 import com.king.paddleup.infrastructure.paymentgateway.PaymentGatewayProviderFactory;
 import com.king.paddleup.infrastructure.paymentgateway.bachs.dto.PostChargeRequest;
 import com.king.paddleup.infrastructure.paymentgateway.bachs.dto.PostChargeResponse;
-import com.king.paddleup.domain.webhook.dto.BachsWebhookEvent;
+import com.king.paddleup.infrastructure.paymentgateway.bachs.dto.BachsWebhookEvent;
 import com.king.paddleup.domain.auction.exception.AuctionNotFoundException;
 import com.king.paddleup.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -126,7 +126,7 @@ public class PaymentService {
 
         Optional<Payment> paymentOpt = Optional.empty();
         if (paymentId != null && !paymentId.isBlank()) {
-            paymentOpt = paymentRepository.findByPaymentId(paymentId);
+            paymentOpt = paymentRepository.findByPaymentId(paymentId); // deduplicate payment record (avoid duplicates)
         }
         if (paymentOpt.isEmpty() && reference != null && !reference.isBlank()) {
             paymentOpt = paymentRepository.findByReference(reference);

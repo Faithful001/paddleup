@@ -1,4 +1,4 @@
-package com.king.paddleup.domain.webhook.dto;
+package com.king.paddleup.infrastructure.paymentgateway.bachs.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

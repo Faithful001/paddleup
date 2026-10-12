@@ -68,12 +68,9 @@ public class BidSseService {
     }
 
     private void removeEmitter(UUID auctionId, SseEmitter emitter) {
-        List<SseEmitter> emitters = auctionEmitters.get(auctionId);
-        if (emitters != null) {
+        auctionEmitters.computeIfPresent(auctionId, (id, emitters) -> {
             emitters.remove(emitter);
-            if (emitters.isEmpty()) {
-                auctionEmitters.remove(auctionId);
-            }
-        }
+            return emitters.isEmpty() ? null : emitters;
+        });
     }
 }

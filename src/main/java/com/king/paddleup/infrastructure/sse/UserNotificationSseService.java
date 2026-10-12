@@ -72,12 +72,9 @@ public class UserNotificationSseService {
     }
 
     private void removeEmitter(UUID userId, SseEmitter emitter) {
-        List<SseEmitter> emitters = userEmitters.get(userId);
-        if (emitters != null) {
+        userEmitters.computeIfPresent(userId, (id, emitters) -> {
             emitters.remove(emitter);
-            if (emitters.isEmpty()) {
-                userEmitters.remove(userId);
-            }
-        }
+            return emitters.isEmpty() ? null : emitters;
+        });
     }
 }

@@ -1,5 +1,6 @@
 package com.king.paddleup.shared.exception.handler;
 
+import com.king.paddleup.domain.idempotency.exception.IdempotencyConflictException;
 import com.king.paddleup.shared.exception.*;
 import com.king.paddleup.shared.response.Response;
 import org.springframework.http.HttpStatus;
@@ -161,4 +162,23 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND
         );
     }
+
+    @ExceptionHandler(com.king.paddleup.infrastructure.paymentgateway.exception.PaymentGatewayException.class)
+    public ResponseEntity<Response<String>> handlePaymentGatewayException(
+            com.king.paddleup.infrastructure.paymentgateway.exception.PaymentGatewayException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.BAD_GATEWAY
+        );
+    }
+
+    @ExceptionHandler(IdempotencyConflictException.class)
+    public ResponseEntity<Response<String>> handleIdempotencyConflictException(
+            IdempotencyConflictException ex) {
+        return new ResponseEntity<>(
+                Response.error(ex.getMessage()),
+                HttpStatus.CONFLICT
+        );
+    }
 }
+

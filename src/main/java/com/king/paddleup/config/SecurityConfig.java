@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/v3/api-docs.yaml",
                                 "/error",
                                 "/auctions/*/bids/stream",
-                                "/auctions/*/comments/stream"
+                                "/auctions/*/comments/stream",
+                                "/webhooks/bachs"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

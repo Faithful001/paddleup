@@ -1,53 +1,70 @@
 package com.king.paddleup.infrastructure.paymentgateway.bachs.dto;
 
-//{
-//        "payment_id": "ch_389305e973a841cc",
-//        "status": "processing",
-//        "amount": "30.85",
-//        "amount_paid": "0.00",
-//        "amount_remaining": "30.85",
-//        "currency": "USD",
-//        "fees": {
-//        "amount": "1.85",
-//        "currency": "USD"
-//        },
-//        "payment_method": "CARD",
-//        "checkout_id": null,
-//        "narration": "April usage",
-//        "reference": "INV-2026-04-881",
-//        "billing_reason": "purchase",
-//        "customer": {
-//        "name": "Jane Doe",
-//        "email": "jane@example.com"
-//        },
-//        "created_at": "2026-04-27T12:05:00.000Z",
-//        "updated_at": "2026-04-27T12:05:00.000Z"
-//        }
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record PostChargeResponse(
-        String payment_id,
+        @JsonProperty("payment_id")
+        String paymentId,
+
+        @JsonProperty("status")
         String status,
+
+        @JsonProperty("amount")
         String amount,
-        String amount_remaning,
+
+        @JsonProperty("amount_paid")
+        String amountPaid,
+
+        @JsonProperty("amount_remaining")
+        String amountRemaining,
+
+        @JsonProperty("currency")
         String currency,
+
+        @JsonProperty("fees")
         Fees fees,
-        String payment_method,
-        String checkout_id,
+
+        @JsonProperty("payment_method")
+        String paymentMethod,
+
+        @JsonProperty("checkout_id")
+        String checkoutId,
+
+        @JsonProperty("narration")
         String narration,
+
+        @JsonProperty("reference")
         String reference,
-        String billing_reason,
+
+        @JsonProperty("billing_reason")
+        String billingReason,
+
+        @JsonProperty("customer")
         Customer customer,
-        String created_at,
-        String updated_at
 
+        @JsonProperty("created_at")
+        String createdAt,
+
+        @JsonProperty("updated_at")
+        String updatedAt
 ) {
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record Fees(
+            @JsonProperty("amount")
             String amount,
-            String currency
-    ){}
 
+            @JsonProperty("currency")
+            String currency
+    ) {}
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record Customer(
+            @JsonProperty("name")
             String name,
+
+            @JsonProperty("email")
             String email
     ) {}
 }

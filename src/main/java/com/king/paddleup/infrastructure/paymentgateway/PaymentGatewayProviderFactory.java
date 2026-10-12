@@ -23,7 +23,7 @@ public class PaymentGatewayProviderFactory {
                 ));
     }
 
-    @Value("payment-gateway")
+    @Value("${payment-gateway:BACHS}")
     private String activeGateway;
 
     public PaymentGatewayProvider<?> getProvider() {

@@ -112,7 +112,7 @@ DB_NAME=paddleup_db
 
 # Redis Cache
 REDIS_HOST=localhost
-REDIS_PORT=6379
+REDIS_PORT=6380
 REDIS_PASSWORD=paddleup321
 
 # RabbitMQ Messaging
@@ -134,6 +134,11 @@ CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 CLOUDINARY_URL=cloudinary://your_api_key:your_api_secret@your_cloud_name
+
+# Payment Gateway
+PAYMENT_GATEWAY=BACHS
+BACHS_API_KEY=your_api_key
+BACHS_BASE_URL=https://api.bachs.io/v1
 ```
 
 ---
